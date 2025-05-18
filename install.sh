@@ -74,7 +74,10 @@ init_git_repo() {
     local course_name="$1"
     cd "$course_name"
     
-    # Ensure git identity is set
+    rm -rf .git
+    git init
+    
+    # Ensure git identity is set (after git init)
     if [ -z "$(git config --get user.email)" ]; then
         if [ -n "$GIT_AUTHOR_EMAIL" ]; then
             git config --local user.email "$GIT_AUTHOR_EMAIL"
@@ -90,9 +93,6 @@ init_git_repo() {
             git config --local user.name "Test User"
         fi
     fi
-    
-    rm -rf .git
-    git init
     
     # Create a test file to commit
     echo "# $course_name" > README.tmp

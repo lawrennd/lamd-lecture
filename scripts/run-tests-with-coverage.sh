@@ -109,8 +109,13 @@ if [ "$IS_MACOS" -eq 1 ] && [ -z "$GITHUB_ACTIONS" ]; then
   TEST_MODE=1 ./install.sh || true
   
   echo "Running Bats tests directly..."
-  if [ -d "test" ] && [ -f "test/install.bats" ]; then
-    bats test/install.bats || true
+  if [ -d "test" ]; then
+    if [ -f "test/install.bats" ]; then
+      bats test/install.bats || true
+    fi
+    if [ -f "test/additional_coverage.bats" ]; then
+      bats test/additional_coverage.bats || true
+    fi
   else
     echo "No Bats tests found. Skipping test coverage."
   fi
@@ -123,8 +128,7 @@ else
   kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/install-sh" bash -c "export TEST_MODE=1; ./install.sh" || true
 
   # Run coverage for Bats tests if they exist
-  if [ -d "test" ] && [ -f "test/install.bats" ]; then
-    echo "Running coverage for Bats tests..."
+  if [ -d "test" ]; then
     # Create a wrapper script to run bats with proper Git config
     echo '#!/bin/bash
 export GIT_AUTHOR_NAME="Test User"
@@ -135,8 +139,12 @@ bats "$@"
 ' > "$COVERAGE_DIR/run-bats.sh"
     chmod +x "$COVERAGE_DIR/run-bats.sh"
     
-    # Run with our wrapper script
-    kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests" "$COVERAGE_DIR/run-bats.sh" test/install.bats || true
+    if [ -f "test/install.bats" ]; then
+      kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests-install" "$COVERAGE_DIR/run-bats.sh" test/install.bats || true
+    fi
+    if [ -f "test/additional_coverage.bats" ]; then
+      kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests-additional" "$COVERAGE_DIR/run-bats.sh" test/additional_coverage.bats || true
+    fi
   else
     echo "No Bats tests found. Skipping test coverage."
   fi
