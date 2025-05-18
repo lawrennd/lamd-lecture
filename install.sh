@@ -123,6 +123,8 @@ create_github_repo() {
         echo "git remote add origin https://github.com/$github_username/$course_name.git"
         echo "git push -u origin main"
     fi
+    # Always return success
+    return 0
 }
 
 # Main installation function

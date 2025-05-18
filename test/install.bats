@@ -122,6 +122,14 @@ EOF
 }
 
 @test "create_github_repo handles missing gh command" {
+    # Create a mock 'command' function that makes 'gh' always "not found"
+    command() {
+        if [ "$2" = "gh" ]; then
+            return 1  # Command not found
+        fi
+        builtin command "$@"
+    }
+    
     mkdir -p "test-course"
     cd "test-course"
     git init
@@ -129,6 +137,8 @@ EOF
     git add test_file
     git commit -m "Initial commit"
     cd ..
+    
+    # This should return success even when the gh command is not found
     run create_github_repo "test-course" "testuser"
     [ "$status" -eq 0 ]
     [[ "$output" == *"GitHub CLI not found"* ]]
