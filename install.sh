@@ -38,17 +38,20 @@ update_config_files() {
     local github_username="$5"
 
     # Update _lamd.yml
-    sed -i '' "s/given: Your/given: ${full_name%% *}/" "$course_name/_lamd/_lamd.yml"
-    sed -i '' "s/family: Name/family: ${full_name#* }/" "$course_name/_lamd/_lamd.yml"
-    sed -i '' "s/institution: Your Institution/institution: $institution/" "$course_name/_lamd/_lamd.yml"
-    sed -i '' "s|url: http://example.com|url: $website_url|" "$course_name/_lamd/_lamd.yml"
-    sed -i '' "s/organization: yourusername/organization: $github_username/" "$course_name/_lamd/_lamd.yml"
-    sed -i '' "s/repository: lamd-lecture/repository: $course_name/" "$course_name/_lamd/_lamd.yml"
-    sed -i '' "s/baseurl: \"lamd-lecture\"/baseurl: \"$course_name\"/" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s/given: Your/given: ${full_name%% *}/" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s/family: Name/family: ${full_name#* }/" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s/institution: Your Institution/institution: $institution/" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s|url: http://example.com|url: $website_url|" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s/organization: yourusername/organization: $github_username/" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s/repository: lamd-lecture/repository: $course_name/" "$course_name/_lamd/_lamd.yml"
+    sed -i.bak "s/baseurl: \"lamd-lecture\"/baseurl: \"$course_name\"/" "$course_name/_lamd/_lamd.yml"
 
     # Update _config.yml
-    sed -i '' "s/title: LaMD Lecture Course/title: $course_name/" "$course_name/_config.yml"
-    sed -i '' "s/description: A template lecture course using LaMD/description: $course_name - A LaMD-based lecture course/" "$course_name/_config.yml"
+    sed -i.bak "s/title: LaMD Lecture Course/title: $course_name/" "$course_name/_config.yml"
+    sed -i.bak "s/description: A template lecture course using LaMD/description: $course_name - A LaMD-based lecture course/" "$course_name/_config.yml"
+
+    # Remove backup files
+    rm -f "$course_name/_lamd/_lamd.yml.bak" "$course_name/_config.yml.bak"
 }
 
 # Function to initialize git repository
