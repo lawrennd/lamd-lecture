@@ -140,14 +140,18 @@ bats "$@"
     chmod +x "$COVERAGE_DIR/run-bats.sh"
     
     if [ -f "test/install.bats" ]; then
-      kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests-install" "$COVERAGE_DIR/run-bats.sh" test/install.bats || true
+      kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests-install" bash -c "$COVERAGE_DIR/run-bats.sh test/install.bats" || true
     fi
     if [ -f "test/additional_coverage.bats" ]; then
-      kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests-additional" "$COVERAGE_DIR/run-bats.sh" test/additional_coverage.bats || true
+      kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests-additional" bash -c "$COVERAGE_DIR/run-bats.sh test/additional_coverage.bats" || true
     fi
   else
     echo "No Bats tests found. Skipping test coverage."
   fi
+  
+  # Merge coverage reports
+  echo "Merging coverage reports..."
+  kcov --merge "$COVERAGE_DIR/merged" "$COVERAGE_DIR/install-sh" "$COVERAGE_DIR/bats-tests-install" "$COVERAGE_DIR/bats-tests-additional" || true
   
   # Generate coverage files
   generate_coverage_files
