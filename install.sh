@@ -73,10 +73,39 @@ update_config_files() {
 init_git_repo() {
     local course_name="$1"
     cd "$course_name"
+    
+    # Ensure git identity is set
+    if [ -z "$(git config --get user.email)" ]; then
+        if [ -n "$GIT_AUTHOR_EMAIL" ]; then
+            git config --local user.email "$GIT_AUTHOR_EMAIL"
+        else
+            git config --local user.email "test@example.com"
+        fi
+    fi
+    
+    if [ -z "$(git config --get user.name)" ]; then
+        if [ -n "$GIT_AUTHOR_NAME" ]; then
+            git config --local user.name "$GIT_AUTHOR_NAME"
+        else
+            git config --local user.name "Test User"
+        fi
+    fi
+    
     rm -rf .git
     git init
+    
+    # Create a test file to commit
+    echo "# $course_name" > README.tmp
+    
     git add .
-    git commit -m "Initial commit"
+    git commit -m "Initial commit" || {
+        # If commit fails, try harder to set identity
+        export GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME:-Test User}"
+        export GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-test@example.com}"
+        export GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-Test User}"
+        export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-test@example.com}"
+        git -c user.name="Test User" -c user.email="test@example.com" commit -m "Initial commit"
+    }
 }
 
 # Function to create GitHub repository

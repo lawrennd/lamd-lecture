@@ -12,6 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up Git identity
+      run: |
+        git config --global user.email "test@example.com"
+        git config --global user.name "Test User"
+
     - name: Install BATS
       run: |
         git clone https://github.com/bats-core/bats-core.git

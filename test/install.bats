@@ -6,6 +6,16 @@ setup() {
     # Create a temporary directory for each test
     TEST_DIR=$(mktemp -d)
     cd "$TEST_DIR"
+    
+    # Set up Git identity for tests if not already set
+    if [ -z "$(git config --global user.email)" ] || [ -z "$(git config --global user.name)" ]; then
+        git config --global user.email "test@example.com"
+        git config --global user.name "Test User"
+    fi
+    # Also set local Git config for this test
+    git config --local user.email "test@example.com"
+    git config --local user.name "Test User"
+    
     # Source the install script
     SCRIPT_PATH="$ORIGINAL_DIR/install.sh"
     source "$SCRIPT_PATH"

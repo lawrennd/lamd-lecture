@@ -15,6 +15,23 @@ if [ "$OS" = "Darwin" ]; then
   echo "Running on MacOS (Darwin)"
 fi
 
+# Ensure Git is properly configured for tests
+setup_git_identity() {
+  if [ -z "$(git config --global user.email)" ] || [ -z "$(git config --global user.name)" ]; then
+    echo "Setting up Git identity for tests..."
+    git config --global user.email "test@example.com"
+    git config --global user.name "Test User"
+  else
+    echo "Git identity already configured."
+  fi
+  
+  # Also set environment variables for Git commands
+  export GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME:-"Test User"}"
+  export GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-"test@example.com"}"
+  export GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-"Test User"}"
+  export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-"test@example.com"}"
+}
+
 # Check if kcov is installed
 if ! command -v kcov >/dev/null 2>&1; then
   echo "Error: kcov is required but not installed."
@@ -36,6 +53,9 @@ if ! command -v bats >/dev/null 2>&1 && [ -z "$GITHUB_ACTIONS" ]; then
   echo "Warning: bats is required for testing but not installed. Tests may fail."
   echo "Please install bats: https://github.com/bats-core/bats-core"
 fi
+
+# Setup Git identity
+setup_git_identity
 
 # Create a dummy file for coverage detection
 mkdir -p "$COVERAGE_DIR/data"
@@ -105,7 +125,18 @@ else
   # Run coverage for Bats tests if they exist
   if [ -d "test" ] && [ -f "test/install.bats" ]; then
     echo "Running coverage for Bats tests..."
-    kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests" bats test/install.bats || true
+    # Create a wrapper script to run bats with proper Git config
+    echo '#!/bin/bash
+export GIT_AUTHOR_NAME="Test User"
+export GIT_AUTHOR_EMAIL="test@example.com"
+export GIT_COMMITTER_NAME="Test User"
+export GIT_COMMITTER_EMAIL="test@example.com"
+bats "$@"
+' > "$COVERAGE_DIR/run-bats.sh"
+    chmod +x "$COVERAGE_DIR/run-bats.sh"
+    
+    # Run with our wrapper script
+    kcov --include-pattern=install.sh --exclude-pattern=test/ "$COVERAGE_DIR/bats-tests" "$COVERAGE_DIR/run-bats.sh" test/install.bats || true
   else
     echo "No Bats tests found. Skipping test coverage."
   fi
