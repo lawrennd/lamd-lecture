@@ -43,7 +43,7 @@ lamd-lecture provides a skeleton structure for building lecture courses with the
 ```
 lecture-course/
 ├── _config.yml           # Jekyll configuration
-├── _lamd/                # LaMD files containing lamd sources
+├── _lamd/                # LaMD files containing lecture sources
 │   └── _lamd.yml         # LaMD configuration (author, output formats, paths)
 ├── _lectures/            # Compiled Lecture html files
 ├── _notebooks/           # Compiled Jupyter notebooks
