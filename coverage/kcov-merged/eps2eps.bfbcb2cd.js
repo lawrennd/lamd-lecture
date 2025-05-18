@@ -1,0 +1,33 @@
+var data = {lines:[
+{"lineNum":"    1","line":"#!/bin/sh"},
+{"lineNum":"    2","line":"# \"Distill\" Encapsulated PostScript."},
+{"lineNum":"    3","line":""},
+{"lineNum":"    4","line":"# This definition is changed on install to match the"},
+{"lineNum":"    5","line":"# executable name set in the makefile"},
+{"lineNum":"    6","line":"GS_EXECUTABLE=gs","class":"lineNoCov","hits":"0",},
+{"lineNum":"    7","line":"gs=\"`dirname \\\"$0\\\"`/$GS_EXECUTABLE\"","class":"lineNoCov","hits":"0",},
+{"lineNum":"    8","line":"if test ! -x \"$gs\"; then","class":"lineNoCov","hits":"0",},
+{"lineNum":"    9","line":"\tgs=\"$GS_EXECUTABLE\"","class":"lineNoCov","hits":"0",},
+{"lineNum":"   10","line":"fi"},
+{"lineNum":"   11","line":"GS_EXECUTABLE=\"$gs\"","class":"lineNoCov","hits":"0",},
+{"lineNum":"   12","line":""},
+{"lineNum":"   13","line":"OPTIONS=\"-dDEVICEWIDTH=250000 -dDEVICEHEIGHT=250000\"","class":"lineNoCov","hits":"0",},
+{"lineNum":"   14","line":"while true","class":"lineNoCov","hits":"0",},
+{"lineNum":"   15","line":"do"},
+{"lineNum":"   16","line":"\tcase \"$1\" in","class":"lineNoCov","hits":"0",},
+{"lineNum":"   17","line":"\t-?*) OPTIONS=\"$OPTIONS $1\" ;;","class":"lineNoCov","hits":"0",},
+{"lineNum":"   18","line":"\t*)  break ;;","class":"lineNoCov","hits":"0",},
+{"lineNum":"   19","line":"\tesac"},
+{"lineNum":"   20","line":"\tshift","class":"lineNoCov","hits":"0",},
+{"lineNum":"   21","line":"done"},
+{"lineNum":"   22","line":""},
+{"lineNum":"   23","line":"if [ $# -ne 2 ]; then","class":"lineNoCov","hits":"0",},
+{"lineNum":"   24","line":"\techo \"Usage: `basename \\\"$0\\\"` ...switches... input.eps output.eps\" 1>&2","class":"lineNoCov","hits":"0",},
+{"lineNum":"   25","line":"\texit 1","class":"lineNoCov","hits":"0",},
+{"lineNum":"   26","line":"fi"},
+{"lineNum":"   27","line":""},
+{"lineNum":"   28","line":"exec \"$GS_EXECUTABLE\" -q -sDEVICE=eps2write -sstdout=%stderr \"-sOutputFile=$2\" -dNOPAUSE -dBATCH -P- -dSAFER $OPTIONS \"$1\"","class":"lineNoCov","hits":"0",},
+]};
+var percent_low = 25;var percent_high = 75;
+var header = { "command" : "bats", "date" : "2025-05-18 11:25:14", "instrumented" : 15, "covered" : 0,};
+var merged_data = [];

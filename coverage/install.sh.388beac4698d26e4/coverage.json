@@ -1,0 +1,14 @@
+{
+  "files": [
+    {"file": "/Users/neil/lawrennd/lamd-lecture/coverage/test.sh.d5918ff537202ce2/install.sh.7495daf9.js", "percent_covered": "0.00", "covered_lines": "0", "total_lines": "134"},
+    {"file": "/Users/neil/lawrennd/lamd-lecture/coverage/test.sh.d5918ff537202ce2/install.sh.7495daf9.html", "percent_covered": "0.00", "covered_lines": "0", "total_lines": "68"},
+    {"file": "/Users/neil/lawrennd/lamd-lecture/install.sh", "percent_covered": "16.09", "covered_lines": "14", "total_lines": "87"}
+  ],
+  "percent_covered": "4.84",
+  "covered_lines": 14,
+  "total_lines": 289,
+  "percent_low": 25,
+  "percent_high": 75,
+  "command": "install.sh",
+  "date": "2025-05-18 12:32:24"
+}
