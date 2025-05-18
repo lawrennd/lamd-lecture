@@ -31,6 +31,18 @@ jobs:
         make
         sudo make install
 
+    - name: Debug directory structure
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Listing contents of workspace:"
+        ls -la
+        echo "Listing contents of test directory:"
+        ls -la test/
+        echo "Checking if test/install.bats exists:"
+        test -f test/install.bats && echo "File exists" || echo "File does not exist"
+        echo "File permissions:"
+        ls -l test/install.bats || echo "File not found"
+
     - name: Run tests with coverage
       run: |
         cd "$GITHUB_WORKSPACE"
