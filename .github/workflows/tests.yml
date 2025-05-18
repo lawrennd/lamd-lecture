@@ -21,7 +21,7 @@ jobs:
     - name: Install kcov
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake g++ pkg-config jq
+        sudo apt-get install -y cmake g++ pkg-config jq libcurl4-openssl-dev
         wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz
         tar xzf master.tar.gz
         cd kcov-master
