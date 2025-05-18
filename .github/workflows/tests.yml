@@ -34,6 +34,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         cd "$GITHUB_WORKSPACE"
+        chmod +x test/install.bats
         kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage test/install.bats
 
     - name: Upload coverage to Codecov
