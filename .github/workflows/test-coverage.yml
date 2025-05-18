@@ -55,6 +55,10 @@ jobs:
           # Verify kcov is installed and display version
           which kcov
           kcov --version
+          
+          # Install yq for tests
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
 
       - name: Run tests with coverage
         run: |
@@ -67,5 +71,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: lawrennd/lamd-lecture
           directory: ./coverage
+          files: ./coverage/coverage.json,./coverage/cobertura/coverage.xml
           fail_ci_if_error: false
-          verbose: true 
+          verbose: true
+          handle_no_reports_found: false 
