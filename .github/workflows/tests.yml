@@ -54,13 +54,19 @@ jobs:
         echo "File contents:"
         cat test/install.bats
         echo "Running kcov with relative path:"
-        kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage test/install.bats
+        if [ -n "$CODECOV_TOKEN" ]; then
+          kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage test/install.bats
+        else
+          echo "Codecov token not found, running kcov without coverage reporting"
+          kcov --exclude-pattern=bats-core,tests coverage test/install.bats
+        fi
 
     - name: Upload coverage to Codecov
+      if: env.CODECOV_TOKEN != ''
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage/coverage.json
         flags: unittests
         name: codecov-umbrella
-        fail_ci_if_error: true 
+        fail_ci_if_error: false 
