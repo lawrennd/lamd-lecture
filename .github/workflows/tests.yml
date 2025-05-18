@@ -53,12 +53,12 @@ jobs:
         test -f "$GITHUB_WORKSPACE/test/install.bats" && echo "File exists at full path" || echo "File does not exist at full path"
         echo "File contents:"
         cat test/install.bats
-        echo "Running kcov with relative path:"
+        echo "Running kcov with absolute path:"
         if [ -n "$CODECOV_TOKEN" ]; then
-          kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage test/install.bats
+          kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage "$GITHUB_WORKSPACE/test/install.bats"
         else
           echo "Codecov token not found, running kcov without coverage reporting"
-          kcov --exclude-pattern=bats-core,tests coverage test/install.bats
+          kcov --exclude-pattern=bats-core,tests coverage "$GITHUB_WORKSPACE/test/install.bats"
         fi
 
     - name: Upload coverage to Codecov
