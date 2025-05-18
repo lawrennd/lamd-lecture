@@ -1,4 +1,4 @@
-name: Test Coverage
+name: Tests
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-coverage:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /usr/local/bin/kcov
-          key: ${{ runner.os }}-kcov-${{ hashFiles('.github/workflows/test-coverage.yml') }}
+          key: ${{ runner.os }}-kcov-${{ hashFiles('.github/workflows/tests.yml') }}
 
       - name: Install dependencies
         run: |
