@@ -21,6 +21,9 @@ get_user_input() {
 # Function to create directory structure
 create_directory_structure() {
     local course_name="$1"
+    if [ -z "$course_name" ]; then
+        course_name="."
+    fi
     mkdir -p "$course_name/_lamd"
     mkdir -p "$course_name/_lectures"
     mkdir -p "$course_name/_notebooks"
@@ -37,21 +40,33 @@ update_config_files() {
     local website_url="$4"
     local github_username="$5"
 
-    # Update _lamd.yml
-    sed -i.bak "s/given: Your/given: ${full_name%% *}/" "$course_name/_lamd/_lamd.yml"
-    sed -i.bak "s/family: Name/family: ${full_name#* }/" "$course_name/_lamd/_lamd.yml"
-    sed -i.bak "s/institution: Your Institution/institution: $institution/" "$course_name/_lamd/_lamd.yml"
-    sed -i.bak "s|url: http://example.com|url: $website_url|" "$course_name/_lamd/_lamd.yml"
-    sed -i.bak "s/organization: yourusername/organization: $github_username/" "$course_name/_lamd/_lamd.yml"
-    sed -i.bak "s/repository: lamd-lecture/repository: $course_name/" "$course_name/_lamd/_lamd.yml"
-    sed -i.bak "s/baseurl: \"lamd-lecture\"/baseurl: \"$course_name\"/" "$course_name/_lamd/_lamd.yml"
+    # Extract first and last name
+    local given_name="${full_name%% *}"
+    local family_name="${full_name#* }"
+    if [ "$given_name" = "$family_name" ]; then
+        family_name=""
+    fi
 
-    # Update _config.yml
-    sed -i.bak "s/title: LaMD Lecture Course/title: $course_name/" "$course_name/_config.yml"
-    sed -i.bak "s/description: A template lecture course using LaMD/description: $course_name - A LaMD-based lecture course/" "$course_name/_config.yml"
+    # Update _lamd.yml using yq
+    if [ -f "$course_name/_lamd/_lamd.yml" ]; then
+        yq -i "
+            .given = \"$given_name\" |
+            .family = \"$family_name\" |
+            .institution = \"$institution\" |
+            .url = \"$website_url\" |
+            .organization = \"$github_username\" |
+            .repository = \"$course_name\" |
+            .baseurl = \"$course_name\"
+        " "$course_name/_lamd/_lamd.yml"
+    fi
 
-    # Remove backup files
-    rm -f "$course_name/_lamd/_lamd.yml.bak" "$course_name/_config.yml.bak"
+    # Update _config.yml using yq
+    if [ -f "$course_name/_config.yml" ]; then
+        yq -i "
+            .title = \"$course_name\" |
+            .description = \"$course_name - A LaMD-based lecture course\"
+        " "$course_name/_config.yml"
+    fi
 }
 
 # Function to initialize git repository

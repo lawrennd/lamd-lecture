@@ -18,6 +18,11 @@ jobs:
         cd bats-core
         sudo ./install.sh /usr/local
 
+    - name: Install yq
+      run: |
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod a+x /usr/local/bin/yq
+
     - name: Install kcov
       run: |
         sudo apt-get update
@@ -31,25 +36,12 @@ jobs:
         make
         sudo make install
 
-    - name: Debug directory structure
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Listing contents of workspace:"
-        ls -la
-        echo "Listing contents of test directory:"
-        ls -la test/
-        echo "Checking if test/install.bats exists:"
-        test -f test/install.bats && echo "File exists" || echo "File does not exist"
-        echo "File permissions:"
-        ls -l test/install.bats || echo "File not found"
-
     - name: Run tests with coverage
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Contents of test file:"
-        cat test/install.bats
-        echo "Running kcov on BATS executable:"
-        kcov --include-path=$GITHUB_WORKSPACE coverage $(which bats) test/install.bats
+        # Create coverage directory
+        mkdir -p coverage
+        # Run tests with kcov, excluding BATS framework
+        kcov --include-path=$GITHUB_WORKSPACE --exclude-pattern=bats-core coverage bats test/install.bats
 
     - name: Upload coverage to Codecov
       if: env.CODECOV_TOKEN != ''
