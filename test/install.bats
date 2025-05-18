@@ -7,6 +7,9 @@ setup() {
     TEST_DIR=$(mktemp -d)
     cd "$TEST_DIR"
     
+    # Initialize a git repository first
+    git init
+    
     # Set up Git identity for tests if not already set
     if [ -z "$(git config --global user.email)" ] || [ -z "$(git config --global user.name)" ]; then
         git config --global user.email "test@example.com"
