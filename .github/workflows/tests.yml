@@ -47,11 +47,14 @@ jobs:
       run: |
         cd "$GITHUB_WORKSPACE"
         echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+        echo "Current directory: $(pwd)"
         echo "Full path to test file: $GITHUB_WORKSPACE/test/install.bats"
         echo "Verifying file exists at full path:"
         test -f "$GITHUB_WORKSPACE/test/install.bats" && echo "File exists at full path" || echo "File does not exist at full path"
-        chmod +x test/install.bats
-        kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage "$GITHUB_WORKSPACE/test/install.bats"
+        echo "File contents:"
+        cat test/install.bats
+        echo "Running kcov with relative path:"
+        kcov --coveralls-id=$GITHUB_RUN_ID --exclude-pattern=bats-core,tests coverage test/install.bats
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
